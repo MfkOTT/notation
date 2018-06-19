@@ -1,0 +1,24 @@
+datasource:
+  type: com.alibaba.druid.pool.DruidDataSource
+  write:
+    url: jdbc:mysql://140.143.35.32:3306/notation?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: admin
+
+  read:
+    url: jdbc:mysql://140.143.35.32:3306/notation?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: admin
+spring:
+  redis:
+    # Redis数据库索引（默认为0）
+    database: 0
+    host: 100.126.113.81
+    port: 6379
+    password: ~
+    timeout: 0
+server:
+  port: 8080
+logging:
+  file: /home/ubuntu/logs/notation.${server.port}.log
+  level.com.taikang.pdm: INFO

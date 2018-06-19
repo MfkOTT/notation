@@ -1,0 +1,36 @@
+datasource:
+  type: com.alibaba.druid.pool.DruidDataSource
+  write:
+    url: jdbc:mysql://localhost:3306/notation?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: admin
+
+  read:
+    url: jdbc:mysql://localhost:3306/notation?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: admin
+spring:
+  redis:
+    # Redis数据库索引（默认为0）
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: ~
+    timeout: 0
+server:
+  port: 8080
+appId: wx3d4d1f107ac932d5
+paymentUrl: 
+successRedirectUrl: 
+failRedirectUrl: 
+cancelRedirectUrl: 
+notifyUrl: 
+clientIp: 
+totalFee: 0.01
+bipUrl:
+securityUrl: http://security.life.tkuat.com/securityData/rsa/decrypt?prodName=epm
+isalesOrgCodeUrl: http://isaleuat.life.taikang.com/isales/userinfo/
+#securityUrl: http://sspuat.life.taikang.com/pdm/security/rsa/pdm/decrypt
+logging:
+  file: /home/nginx/logs/pdmService.${server.port}.log
+  level.com.taikang.pdm: DEBUG

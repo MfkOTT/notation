@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>简谱小站</title>
+    <meta name="description" content="提供免费固定C调简谱和伴奏"/>
+    <meta name="keywords" content="简谱,简谱小站,半音阶,C调谱,口琴,伴奏ACG"/>
+    <meta name="author" content="Ski Zhou"/>
+    <link rel="shortcut icon" href="http://www.skizhou.com/page/image/harmonica/icon.png">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css"/>
+    <link rel="stylesheet" href="css/xq_navbar.css"/>
+    <link rel="stylesheet" href="css/xq.css"/>
+    <link rel="stylesheet" type="text/css" href="css/demo.css"/>
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=65889806" charset="UTF-8"></script>
+    <!--<script type="text/javascript" src="http://tajs.qq.com/stats?sId=65897039" charset="UTF-8"></script>-->
+
+    <script type="text/javascript" src="js/xq_navbar.js"></script>
+    <!--<script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>-->
+
+    <style>
+        canvas {
+            z-index: -1;
+            position: absolute;
+            padding: 0;
+            margin: 0;
+        }
+
+        div.btnbg {
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        /**{padding: 0;margin: 0;}*/
+        /*header{padding: 20px;font-size: 30px;color: #fff;}*/
+        /*footer{padding: 20px;text-align: center;color: #ccc;}*/
+        /*footer>a{color: #999;}*/
+        #secContent{text-align: center;padding: 5px;width: 35%;}
+        /*#secContent{margin: 30px auto;}*/
+        #secContent>div{display: flex;justify-content:space-between;align-items: center;}
+        button {padding: 5px 10px;}
+        #btnTest {padding: 15px 30px;font-size: 20px;}
+        #btnStop {display: none;}
+        #btn-jpq{width: 90%;}
+        #btn-contro{position: absolute; top: 23%;left: 45%;}
+        #speed{font-size: 20px;}
+        #msg{height: 20px;padding-top: 5px; font-size: 9px;color: gray;}
+        .btn-p{width: 28px;
+            height: 28px;
+            vertical-align: middle;
+            position: relative;
+            bottom: 5px;
+            right: 3px;}
+        #btnPlay{width: 38px;height: 28px}
+        #btnStop{width: 38px;height: 28px}
+    </style>
+    <script>
+//        var vConsole = new VConsole();
+        document.addEventListener("DOMContentLoaded", function () {
+
+            let speed = 120, //节拍速度
+                arrClick = [],  //测速时每次点击的速度组成的数组，节拍速度取其平均值
+                clickTime = 0,  //测速点击计时器，超过 3 秒清空数组
+                s = Date.now(), //记录每一次点击的时间，下一次点击时与此时间的间隔，来计算速度
+                time = 0,   //play 过程 timeout 变量
+                isPlay = false, //是否正在播放
+                speedMsg = document.getElementById("speed"),    //页面正中间显示速度值的元素
+                rangeValue = document.getElementById("rangeValue"), //滑块元素
+                showSpeed = () => rangeValue.value = speedMsg.innerText = speed;    //更新显示速度值的函数
+
+            /** 测速按钮点击 */
+//            document.getElementById("btnTest").addEventListener("click", function () {
+//                let lastSpeed = Math.floor(60000 / (Date.now() - s));
+//                if (lastSpeed - arrClick[arrClick.length - 1] > 30) { arrClick = []; }  //如果点击时间和上次差别较大，则清零重测
+//                arrClick.push(lastSpeed);
+//
+//                if (arrClick.length > 31) arrClick.shift(); //最大容量保持在30个（除去第 1 个不用）
+//
+//                //如果数量多于1个则计算速度（第 1 个时间间隔太久，不准确，弃之）
+//                if (arrClick.length > 1) {
+//                    //取第2个到最后的平均值
+//                    speed = Math.ceil((arrClick.reduce((sum, n) => sum + n) - arrClick[0]) / (arrClick.length - 1));
+//                    if (arrClick.length > 5) document.getElementById("msg").innerText = "多点几次更准确...";
+//                }
+//                showSpeed();
+//                s = Date.now();
+//                document.getElementById("btnStop").click(); //测速时停止播放
+//
+//                //两次点击间隔大于 3 秒就重置
+//                window.clearTimeout(clickTime);
+//                clickTime = window.setTimeout(function () {
+//                    arrClick = [];
+//                    document.getElementById("msg").innerText = "";
+//                }, 3000);
+//
+//            });
+
+            /** 播放按钮点击 */
+            document.getElementById("btnPlay").addEventListener("click", function () {
+                isPlay = true;
+                play();
+                this.style.display = "none";
+                document.getElementById("btnStop").style.display = "inline-block";
+            });
+
+            /** 停止按钮点击 */
+            document.getElementById("btnStop").addEventListener("click", function () {
+                window.clearTimeout(time);
+                isPlay = false;
+                this.style.display = "none";
+                document.getElementById("btnPlay").style.display = "inline-block";
+            });
+
+            /** 减号按钮点击 */
+            document.getElementById("btnSub").addEventListener("click", function () {
+                speed--;
+                showSpeed();
+            });
+
+            /** 加号按钮点击 */
+            document.getElementById("btnAdd").addEventListener("click", function () {
+                speed++;
+                showSpeed();
+            });
+
+            /** 滑动条更改 */
+            rangeValue.addEventListener("change", function () {
+                speed = this.value * 1;
+                showSpeed();
+            });
+
+            /** 播放 */
+            let play = () => {
+                window.clearTimeout(time);
+                playsound();
+                if (isPlay) {
+                    time = window.setTimeout(play, Math.floor(60000 / speed));
+                };
+            }
+
+            let audioCtx = new (window.AudioContext || window.webkitAudioContext);
+            /** 发声 */
+            let playsound = () => {
+                let oscillator = audioCtx.createOscillator();
+                let gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.type = 'sine';
+//                oscillator.frequency.value = 523.25;
+//                oscillator.frequency.setValueAtTime(220, audioCtx.currentTime);
+                oscillator.frequency.setValueAtTime(698.46, audioCtx.currentTime);
+//                oscillator.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.1);
+                oscillator.frequency.linearRampToValueAtTime(698.46, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            }
+        });
+    </script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?b8a1dc8dd5a74f203571ca10c9880b37";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+</head>
+<body class="b-about">
+<canvas id="sakura"></canvas>
+<header class="codrops-header">
+    <div class="xq_bag" id="bar3">
+        <ul class="xq_navbar">
+            <li class="xq_navli"><a href="./index.html">首页</a></li>
+            <li class="xq_navli"><a href="./blackhouse.html">黑屋</a></li>
+            <li class="xq_navli"><a href="./music.html">动力</a></li>
+            <li class="xq_navli"><a href="./about.html">关于</a></li>
+        </ul>
+    </div>
+</header>
+<div class="content descContent">
+
+        <!--<button id="btnTest">连续点击测速</button>-->
+        <!--<div id="msg"></div>-->
+    <div id="btn-jpq">
+        <section id="secContent">
+            <div>
+                <button id="btnSub"><svg style="width: 16px; height: 16px;vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M66.462276 431.621065l891.075447 0 0 127.296492L66.462276 558.917558 66.462276 431.621065z"></path></svg></button>
+                <div id="speed">120</div>
+                <button id="btnAdd"><svg style="width: 16px; height: 16px;vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M1024 448H576V0H448v448H0v128h448v448h128V576h448z"></path></svg></button>
+                <button id="btnPlay" >
+                    <svg class="btn-p" style="width: 28px; height: 28px;vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M196.394461 103.235223 196.394461 920.764777 827.604516 535.079648Z"></path></svg>
+                </button>
+                <button id="btnStop" >
+                    <svg class="btn-p" style="width: 28px; height: 28px;vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M256 256l512 0 0 512-512 0z"></path></svg>
+                </button>
+            </div>
+            <div><input type="range" style="width:100%;" min="20" max="300" id="rangeValue" value="120"></div>
+
+
+    </section>
+
+
+    </div>
+
+    <!--<div id="btn-contro">-->
+        <!--<button id="btnPlay">-->
+            <!--<svg style="width: 32px; height: 32px;vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M196.394461 103.235223 196.394461 920.764777 827.604516 535.079648Z"></path></svg>-->
+        <!--</button>-->
+        <!--<button id="btnStop">-->
+            <!--<svg style="width: 32px; height: 32px;vertical-align: middle;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M256 256l512 0 0 512-512 0z"></path></svg>-->
+        <!--</button>-->
+    <!--</div>-->
+    <p><img src="http://www.skizhou.com/page/image/harmonica/base.png"  width="100%"></p>
+</div>
+
+<div class="container">
+
+
+</div>
+<!-- /container -->
+<!-- JS -->
+<script id="sakura_point_vsh" type="x-shader/x_vertex">
+uniform mat4 uProjection;
+uniform mat4 uModelview;
+uniform vec3 uResolution;
+uniform vec3 uOffset;
+uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
+
+attribute vec3 aPosition;
+attribute vec3 aEuler;
+attribute vec2 aMisc; //x:size, y:fade
+
+varying vec3 pposition;
+varying float psize;
+varying float palpha;
+varying float pdist;
+
+//varying mat3 rotMat;
+varying vec3 normX;
+varying vec3 normY;
+varying vec3 normZ;
+varying vec3 normal;
+
+varying float diffuse;
+varying float specular;
+varying float rstop;
+varying float distancefade;
+
+void main(void) {
+    // Projection is based on vertical angle
+    vec4 pos = uModelview * vec4(aPosition + uOffset, 1.0);
+    gl_Position = uProjection * pos;
+    gl_PointSize = aMisc.x * uProjection[1][1] / -pos.z * uResolution.y * 0.5;
+
+    pposition = pos.xyz;
+    psize = aMisc.x;
+    pdist = length(pos.xyz);
+    palpha = smoothstep(0.0, 1.0, (pdist - 0.1) / uFade.z);
+
+    vec3 elrsn = sin(aEuler);
+    vec3 elrcs = cos(aEuler);
+    mat3 rotx = mat3(
+        1.0, 0.0, 0.0,
+        0.0, elrcs.x, elrsn.x,
+        0.0, -elrsn.x, elrcs.x
+    );
+    mat3 roty = mat3(
+        elrcs.y, 0.0, -elrsn.y,
+        0.0, 1.0, 0.0,
+        elrsn.y, 0.0, elrcs.y
+    );
+    mat3 rotz = mat3(
+        elrcs.z, elrsn.z, 0.0,
+        -elrsn.z, elrcs.z, 0.0,
+        0.0, 0.0, 1.0
+    );
+    mat3 rotmat = rotx * roty * rotz;
+    normal = rotmat[2];
+
+    mat3 trrotm = mat3(
+        rotmat[0][0], rotmat[1][0], rotmat[2][0],
+        rotmat[0][1], rotmat[1][1], rotmat[2][1],
+        rotmat[0][2], rotmat[1][2], rotmat[2][2]
+    );
+    normX = trrotm[0];
+    normY = trrotm[1];
+    normZ = trrotm[2];
+
+    const vec3 lit = vec3(0.6917144638660746, 0.6917144638660746, -0.20751433915982237);
+
+    float tmpdfs = dot(lit, normal);
+    if(tmpdfs < 0.0) {
+        normal = -normal;
+        tmpdfs = dot(lit, normal);
+    }
+    diffuse = 0.4 + tmpdfs;
+
+    vec3 eyev = normalize(-pos.xyz);
+    if(dot(eyev, normal) > 0.0) {
+        vec3 hv = normalize(eyev + lit);
+        specular = pow(max(dot(hv, normal), 0.0), 20.0);
+    }
+    else {
+        specular = 0.0;
+    }
+
+    rstop = clamp((abs(pdist - uDOF.x) - uDOF.y) / uDOF.z, 0.0, 1.0);
+    rstop = pow(rstop, 0.5);
+    //-0.69315 = ln(0.5)
+    distancefade = min(1.0, exp((uFade.x - pdist) * 0.69315 / uFade.y));
+}
+
+
+
+</script>
+<script id="sakura_point_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+
+uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
+
+const vec3 fadeCol = vec3(0.08, 0.03, 0.06);
+
+varying vec3 pposition;
+varying float psize;
+varying float palpha;
+varying float pdist;
+
+//varying mat3 rotMat;
+varying vec3 normX;
+varying vec3 normY;
+varying vec3 normZ;
+varying vec3 normal;
+
+varying float diffuse;
+varying float specular;
+varying float rstop;
+varying float distancefade;
+
+float ellipse(vec2 p, vec2 o, vec2 r) {
+    vec2 lp = (p - o) / r;
+    return length(lp) - 1.0;
+}
+
+void main(void) {
+    vec3 p = vec3(gl_PointCoord - vec2(0.5, 0.5), 0.0) * 2.0;
+    vec3 d = vec3(0.0, 0.0, -1.0);
+    float nd = normZ.z; //dot(-normZ, d);
+    if(abs(nd) < 0.0001) discard;
+
+    float np = dot(normZ, p);
+    vec3 tp = p + d * np / nd;
+    vec2 coord = vec2(dot(normX, tp), dot(normY, tp));
+
+    //angle = 15 degree
+    const float flwrsn = 0.258819045102521;
+    const float flwrcs = 0.965925826289068;
+    mat2 flwrm = mat2(flwrcs, -flwrsn, flwrsn, flwrcs);
+    vec2 flwrp = vec2(abs(coord.x), coord.y) * flwrm;
+
+    float r;
+    if(flwrp.x < 0.0) {
+        r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.36, 0.96) * 0.5);
+    }
+    else {
+        r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.58, 0.96) * 0.5);
+    }
+
+    if(r > rstop) discard;
+
+    vec3 col = mix(vec3(1.0, 0.8, 0.75), vec3(1.0, 0.9, 0.87), r);
+    float grady = mix(0.0, 1.0, pow(coord.y * 0.5 + 0.5, 0.35));
+    col *= vec3(1.0, grady, grady);
+    col *= mix(0.8, 1.0, pow(abs(coord.x), 0.3));
+    col = col * diffuse + specular;
+
+    col = mix(fadeCol, col, distancefade);
+
+    float alpha = (rstop > 0.001)? (0.5 - r / (rstop * 2.0)) : 1.0;
+    alpha = smoothstep(0.0, 1.0, alpha) * palpha;
+
+    gl_FragColor = vec4(col * 0.5, alpha);
+}
+
+
+
+</script>
+<!-- effects -->
+<script id="fx_common_vsh" type="x-shader/x_vertex">
+uniform vec3 uResolution;
+attribute vec2 aPosition;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+    texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+    screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+}
+
+
+
+</script>
+<script id="bg_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+
+uniform vec2 uTimes;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    vec3 col;
+    float c;
+    vec2 tmpv = texCoord * vec2(0.8, 1.0) - vec2(0.95, 1.0);
+    c = exp(-pow(length(tmpv) * 1.8, 2.0));
+    col = mix(vec3(0.02, 0.0, 0.03), vec3(0.96, 0.98, 1.0) * 1.5, c);
+    gl_FragColor = vec4(col * 0.5, 1.0);
+}
+
+
+
+</script>
+<script id="fx_brightbuf_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform vec2 uDelta;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    vec4 col = texture2D(uSrc, texCoord);
+    gl_FragColor = vec4(col.rgb * 2.0 - vec3(0.5), 1.0);
+}
+
+
+
+</script>
+<script id="fx_dirblur_r4_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform vec2 uDelta;
+uniform vec4 uBlurDir; //dir(x, y), stride(z, w)
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    vec4 col = texture2D(uSrc, texCoord);
+    col = col + texture2D(uSrc, texCoord + uBlurDir.xy * uDelta);
+    col = col + texture2D(uSrc, texCoord - uBlurDir.xy * uDelta);
+    col = col + texture2D(uSrc, texCoord + (uBlurDir.xy + uBlurDir.zw) * uDelta);
+    col = col + texture2D(uSrc, texCoord - (uBlurDir.xy + uBlurDir.zw) * uDelta);
+    gl_FragColor = col / 5.0;
+}
+
+
+
+</script>
+<!-- effect fragment shader template -->
+<script id="fx_common_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform vec2 uDelta;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    gl_FragColor = texture2D(uSrc, texCoord);
+}
+
+
+
+</script>
+<!-- post processing -->
+<script id="pp_final_vsh" type="x-shader/x_vertex">
+uniform vec3 uResolution;
+attribute vec2 aPosition;
+varying vec2 texCoord;
+varying vec2 screenCoord;
+void main(void) {
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+    texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+    screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+}
+
+
+
+</script>
+<script id="pp_final_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform sampler2D uBloom;
+uniform vec2 uDelta;
+varying vec2 texCoord;
+varying vec2 screenCoord;
+void main(void) {
+    vec4 srccol = texture2D(uSrc, texCoord) * 2.0;
+    vec4 bloomcol = texture2D(uBloom, texCoord);
+    vec4 col;
+    col = srccol + bloomcol * (vec4(1.0) + srccol);
+    col *= smoothstep(1.0, 0.0, pow(length((texCoord - vec2(0.5)) * 2.0), 1.2) * 0.5);
+    col = pow(col, vec4(0.45454545454545)); //(1.0 / 2.2)
+
+    gl_FragColor = vec4(col.rgb, 1.0);
+    gl_FragColor.a = 1.0;
+}
+
+
+
+</script>
+<script>
+    $("#bar3").xq_navbar({"type":"line","liwidth":"avg","bgcolor":"#000"});
+</script>
+<script type="text/javascript" src="js/sakura.js"></script>
+<script type="text/javascript" src="js/vendors/trianglify.min.js"></script>
+<script type="text/javascript" src="js/vendors/TweenMax.min.js"></script>
+<script type="text/javascript" src="js/vendors/ScrollToPlugin.min.js"></script>
+<script type="text/javascript" src="js/vendors/cash.min.js"></script>
+<style>
+    .descContent{
+        /*margin: 0 auto;*/
+        /*width: 56%;*/
+        color: #fff;
+        background: rgba(0,0,0,.5);
+        padding: 4%;
+        border-radius: 5px;
+    }
+    .descContent p{
+        margin:0;
+        padding:0;
+    }
+    .descContent .head{
+        padding:20px 0;
+    }
+    /*img{*/
+        /*width: 200px;*/
+        /*height: 200px;*/
+        /*border: 0;*/
+    /*}*/
+</style>
+
+</body>
+</html>

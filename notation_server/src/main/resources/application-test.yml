@@ -1,0 +1,36 @@
+datasource:
+  type: com.alibaba.druid.pool.DruidDataSource
+  write:
+    url: jdbc:mysql://10.130.211.47:3306/epm_info?useUnicode=true&characterEncoding=utf-8
+    username: tk_ssp
+    password: TkSsp147
+
+  read:
+    url: jdbc:mysql://10.130.211.47:3306/epm_info?useUnicode=true&characterEncoding=utf-8
+    username: tk_ssp
+    password: TkSsp147
+spring:
+  redis:
+    # Redis数据库索引（默认为0）
+    database: 0
+    host: 10.130.211.54
+    port: 6379
+    password: ~
+    timeout: 0
+server:
+  port: 8080
+appId: wx2f763d09aa9ca523
+paymentUrl: http://wxpt-t.taikang.com/tkmap/wechat/wxpay/order.do
+successRedirectUrl: http://sspuat.life.taikang.com/pdm/pdmpage/pdm-mobile/index.html#/ticket/hasticket?salesmanId=%s
+failRedirectUrl: http://sspuat.life.taikang.com/pdm/pdmpage/pdm-mobile/index.html#/ticket/hasticket?salesmanId=%s
+cancelRedirectUrl: http://sspuat.life.taikang.com/pdm/pdmpage/pdm-mobile/index.html#/list
+notifyUrl: http://planbookuat.life.taikang.com/pdm/service/pay/callback
+clientIp: 119.253.81.248
+totalFee: 0.01
+bipUrl: http://esb.group.tkuat.com/bip/SelectionSysInp
+securityUrl: http://security.life.tkuat.com/securityData/rsa/decrypt?prodName=epm
+#securityUrl: http://sspuat.life.taikang.com/pdm/security/rsa/pdm/decrypt
+isalesOrgCodeUrl: http://isaleuat.life.taikang.com/isales/userinfo/
+logging:
+  file: /home/nginx/logs/epm-agent.${server.port}.log
+  level.com.taikang.pdm: DEBUG

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>简谱小站</title>
+    <meta name="description" content="提供免费固定C调简谱和伴奏"/>
+    <meta name="keywords" content="简谱,简谱小站,半音阶,C调谱,口琴,伴奏ACG"/>
+    <meta name="author" content="Ski Zhou"/>
+    <link rel="shortcut icon" href="http://www.skizhou.com/page/image/harmonica/icon.png">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css"/>
+    <link rel="stylesheet" href="css/xq_navbar.css"/>
+    <link rel="stylesheet" href="css/xq.css"/>
+    <link rel="stylesheet" type="text/css" href="css/demo.css"/>
+
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=65889806" charset="UTF-8"></script>
+    <!--<script type="text/javascript" src="http://tajs.qq.com/stats?sId=65897039" charset="UTF-8"></script>-->
+
+    <script type="text/javascript" src="js/xq_navbar.js"></script>
+
+    <style>
+        canvas {
+            z-index: -1;
+            position: absolute;
+            padding: 0;
+            margin: 0;
+        }
+
+        div.btnbg {
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+    </style>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?b8a1dc8dd5a74f203571ca10c9880b37";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+</head>
+<body class="b-about">
+<canvas id="sakura"></canvas>
+<header class="codrops-header">
+    <div class="xq_bag" id="bar3">
+        <ul class="xq_navbar">
+            <li class="xq_navli"><a href="./index.html">首页</a></li>
+            <li class="xq_navli"><a href="./blackhouse.html">黑屋</a></li>
+            <li class="xq_navli"><a href="./music.html">动力</a></li>
+            <li class="xq_navli"><a href="./about.html">关于</a></li>
+        </ul>
+    </div>
+</header>
+<div class="content descContent">
+    <div class="head"><p>各位琴友好！</p></div>
+    <div class="head"><p>公告：原链接即将弃用，以后请使用http://notation.skizhou.com或http://www.skizhou.com访问本站</p></div>
+
+    <div class="content-first">
+        <span>各位琴友好！我是个普通的上班族，也就是最近半年吧，无意间在B站上听到一首半音阶曲子，顿时觉得我也该买把琴来吹吹。<br>
+过程中，遇到了每个人都会遇到的这样那样的问题，其他且不说，其中有一个恰好就是谱子的问题。
+我相信大多数人要么是直接百度谱子，要么就是在贴吧找别人分享的。<br>
+但这存在几个问题，首先，很多歌曲都不是C调的（大部分都是买的C调琴吧），而百度出来的很多都是原调，强行用C调吹总觉得味道不对。
+还有就是谱子质量参差不齐，有的不全，有的只有数字，连高音低音符号都没有等等，对于熟悉歌曲本身旋律的还好说，不那么熟悉的就完蛋了。
+总之就是不方便。<br>
+所以呢，鉴于我我决定做这么一个谱子分享的小站。
+希望对大家有所帮助。</span>
+    </div>
+    <div class="content-two">
+        <h3>网站的说明</h3>
+        <span>因时间不足，精力不足，做本站的时候都是在Chrome浏览器环境开发调试，未做兼容优化，
+            所以在非Chrome环境，可能会有奇奇怪怪的样式问题，望大家谅解。</span>
+
+    </div>
+    <div class="content-three">
+        <h3>谱子的说明</h3>
+        <span>所有的谱子我都转成了C调，遇到“#”则升半音，即按下口琴推键，<br>
+有一些谱子“#”号太多，我就处理成了C#调，这种需要全程按下推键，如果遇见“b”则放开推键即可。<br>
+当然了，我不是音乐专业的，对于乐理可能连略懂皮毛都算不上，所以谱子肯定会有一些细节错误，如果有发现什么错误，可以用最下方的联系方式告知我，有时间我就会更正（尽量用通俗的点方式，太专业我搞不懂，见谅）。<br>
+其实我想说的是，谱子始终只是个参考，每个人对同一首曲子的理解也不尽相同，所以吹奏过程中不一定要百分百忠于曲谱，适当的随性发挥也是不错的体验，在我看来，我吹口琴只是想愉悦自己而已，而且据说还有助于对乐感的培养呢。<br>
+最初的设想是每张谱子除了伴奏之外，再加一个那些高手演奏作品，后来怕引起不必要的纠纷，就放弃了。不过我在网易云整理了一个歌单，小站里的曲子歌单里面都有，可以欣赏一下。</span>
+
+    </div>
+    <div class="content-three">
+        <h3>关于小黑屋</h3>
+        <span>在贴吧看见有人请教别人应该怎么学口琴，或者买了把口琴，就嚷嚷着求个大佬指点迷津。在我看来，这些都无可厚非，但即便有人指点了，那就理所当然能吹出好听的曲子吗？
+        那是不可能的！没有地基的楼是盖不高的，爬都不会，如何飞，最多就是蹦跶一下，单音都不能保证百分百准确，节奏稳定，还谈什么技巧装饰，谈什么融入情感？
+        小黑屋，是给那些目标是成为一名合格的口琴演奏者准备的，每天玩口琴的时候，先进小黑屋来半小时单音吧，里面的谱子是我平时用的，自己排的，没什么权威性，不保证对所有人有效。
+        觉得我的谱子不合理，完全可以自己排音来练习</span>
+
+    </div>
+    <div class="content-three">
+        <h3>关于动力</h3>
+        <span>好说，在小黑屋被折磨的受不了的时候，来这里欣赏一下高手们的作品，找找坚持下去的动力！</span>
+
+    </div>
+    <div class="content-four">
+        <h3>最后</h3>
+        <span>最后，个人的力量是有限的，我平时工作也很忙，经常加班，有时候下班了累的不行，也没多大精力再折腾这些，不过，我还是会尽最大努力多制作一些喜欢的谱子放上来。<br>大家如果有什么好的谱子呀，伴奏等素材想要分享的，可以通过微信，邮箱什么的交给我，我会抽时间更新到小站。</span>
+    </div>
+    <div class="content-end">
+        <h3>最后的最后</h3>
+        <span>祝大家琴技大涨！！！</span>
+    </div>
+
+    <div class="foot">
+        <h3>Mail</h3>
+        <span>ski.zhou@aliyun.com</span>
+        <h3>网易云音乐</h3>
+        <a href="http://music.163.com/m/playlist?id=2240233294&userid=100253935&from=singlemessage&isappinstalled=0" style="color: #7cc576">口琴歌单</a>
+        <h3>WeChat</h3>
+        <span><img src="http://www.skizhou.com/page/image/harmonica/qr.png" alt=""></span>
+    </div>
+</div>
+<div class="btnbg"></div>
+<div class="container">
+
+
+</div>
+<!-- /container -->
+<!-- JS -->
+<script id="sakura_point_vsh" type="x-shader/x_vertex">
+uniform mat4 uProjection;
+uniform mat4 uModelview;
+uniform vec3 uResolution;
+uniform vec3 uOffset;
+uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
+
+attribute vec3 aPosition;
+attribute vec3 aEuler;
+attribute vec2 aMisc; //x:size, y:fade
+
+varying vec3 pposition;
+varying float psize;
+varying float palpha;
+varying float pdist;
+
+//varying mat3 rotMat;
+varying vec3 normX;
+varying vec3 normY;
+varying vec3 normZ;
+varying vec3 normal;
+
+varying float diffuse;
+varying float specular;
+varying float rstop;
+varying float distancefade;
+
+void main(void) {
+    // Projection is based on vertical angle
+    vec4 pos = uModelview * vec4(aPosition + uOffset, 1.0);
+    gl_Position = uProjection * pos;
+    gl_PointSize = aMisc.x * uProjection[1][1] / -pos.z * uResolution.y * 0.5;
+
+    pposition = pos.xyz;
+    psize = aMisc.x;
+    pdist = length(pos.xyz);
+    palpha = smoothstep(0.0, 1.0, (pdist - 0.1) / uFade.z);
+
+    vec3 elrsn = sin(aEuler);
+    vec3 elrcs = cos(aEuler);
+    mat3 rotx = mat3(
+        1.0, 0.0, 0.0,
+        0.0, elrcs.x, elrsn.x,
+        0.0, -elrsn.x, elrcs.x
+    );
+    mat3 roty = mat3(
+        elrcs.y, 0.0, -elrsn.y,
+        0.0, 1.0, 0.0,
+        elrsn.y, 0.0, elrcs.y
+    );
+    mat3 rotz = mat3(
+        elrcs.z, elrsn.z, 0.0,
+        -elrsn.z, elrcs.z, 0.0,
+        0.0, 0.0, 1.0
+    );
+    mat3 rotmat = rotx * roty * rotz;
+    normal = rotmat[2];
+
+    mat3 trrotm = mat3(
+        rotmat[0][0], rotmat[1][0], rotmat[2][0],
+        rotmat[0][1], rotmat[1][1], rotmat[2][1],
+        rotmat[0][2], rotmat[1][2], rotmat[2][2]
+    );
+    normX = trrotm[0];
+    normY = trrotm[1];
+    normZ = trrotm[2];
+
+    const vec3 lit = vec3(0.6917144638660746, 0.6917144638660746, -0.20751433915982237);
+
+    float tmpdfs = dot(lit, normal);
+    if(tmpdfs < 0.0) {
+        normal = -normal;
+        tmpdfs = dot(lit, normal);
+    }
+    diffuse = 0.4 + tmpdfs;
+
+    vec3 eyev = normalize(-pos.xyz);
+    if(dot(eyev, normal) > 0.0) {
+        vec3 hv = normalize(eyev + lit);
+        specular = pow(max(dot(hv, normal), 0.0), 20.0);
+    }
+    else {
+        specular = 0.0;
+    }
+
+    rstop = clamp((abs(pdist - uDOF.x) - uDOF.y) / uDOF.z, 0.0, 1.0);
+    rstop = pow(rstop, 0.5);
+    //-0.69315 = ln(0.5)
+    distancefade = min(1.0, exp((uFade.x - pdist) * 0.69315 / uFade.y));
+}
+
+
+
+</script>
+<script id="sakura_point_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+
+uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
+
+const vec3 fadeCol = vec3(0.08, 0.03, 0.06);
+
+varying vec3 pposition;
+varying float psize;
+varying float palpha;
+varying float pdist;
+
+//varying mat3 rotMat;
+varying vec3 normX;
+varying vec3 normY;
+varying vec3 normZ;
+varying vec3 normal;
+
+varying float diffuse;
+varying float specular;
+varying float rstop;
+varying float distancefade;
+
+float ellipse(vec2 p, vec2 o, vec2 r) {
+    vec2 lp = (p - o) / r;
+    return length(lp) - 1.0;
+}
+
+void main(void) {
+    vec3 p = vec3(gl_PointCoord - vec2(0.5, 0.5), 0.0) * 2.0;
+    vec3 d = vec3(0.0, 0.0, -1.0);
+    float nd = normZ.z; //dot(-normZ, d);
+    if(abs(nd) < 0.0001) discard;
+
+    float np = dot(normZ, p);
+    vec3 tp = p + d * np / nd;
+    vec2 coord = vec2(dot(normX, tp), dot(normY, tp));
+
+    //angle = 15 degree
+    const float flwrsn = 0.258819045102521;
+    const float flwrcs = 0.965925826289068;
+    mat2 flwrm = mat2(flwrcs, -flwrsn, flwrsn, flwrcs);
+    vec2 flwrp = vec2(abs(coord.x), coord.y) * flwrm;
+
+    float r;
+    if(flwrp.x < 0.0) {
+        r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.36, 0.96) * 0.5);
+    }
+    else {
+        r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.58, 0.96) * 0.5);
+    }
+
+    if(r > rstop) discard;
+
+    vec3 col = mix(vec3(1.0, 0.8, 0.75), vec3(1.0, 0.9, 0.87), r);
+    float grady = mix(0.0, 1.0, pow(coord.y * 0.5 + 0.5, 0.35));
+    col *= vec3(1.0, grady, grady);
+    col *= mix(0.8, 1.0, pow(abs(coord.x), 0.3));
+    col = col * diffuse + specular;
+
+    col = mix(fadeCol, col, distancefade);
+
+    float alpha = (rstop > 0.001)? (0.5 - r / (rstop * 2.0)) : 1.0;
+    alpha = smoothstep(0.0, 1.0, alpha) * palpha;
+
+    gl_FragColor = vec4(col * 0.5, alpha);
+}
+
+
+
+</script>
+<!-- effects -->
+<script id="fx_common_vsh" type="x-shader/x_vertex">
+uniform vec3 uResolution;
+attribute vec2 aPosition;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+    texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+    screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+}
+
+
+
+</script>
+<script id="bg_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+
+uniform vec2 uTimes;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    vec3 col;
+    float c;
+    vec2 tmpv = texCoord * vec2(0.8, 1.0) - vec2(0.95, 1.0);
+    c = exp(-pow(length(tmpv) * 1.8, 2.0));
+    col = mix(vec3(0.02, 0.0, 0.03), vec3(0.96, 0.98, 1.0) * 1.5, c);
+    gl_FragColor = vec4(col * 0.5, 1.0);
+}
+
+
+
+</script>
+<script id="fx_brightbuf_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform vec2 uDelta;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    vec4 col = texture2D(uSrc, texCoord);
+    gl_FragColor = vec4(col.rgb * 2.0 - vec3(0.5), 1.0);
+}
+
+
+
+</script>
+<script id="fx_dirblur_r4_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform vec2 uDelta;
+uniform vec4 uBlurDir; //dir(x, y), stride(z, w)
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    vec4 col = texture2D(uSrc, texCoord);
+    col = col + texture2D(uSrc, texCoord + uBlurDir.xy * uDelta);
+    col = col + texture2D(uSrc, texCoord - uBlurDir.xy * uDelta);
+    col = col + texture2D(uSrc, texCoord + (uBlurDir.xy + uBlurDir.zw) * uDelta);
+    col = col + texture2D(uSrc, texCoord - (uBlurDir.xy + uBlurDir.zw) * uDelta);
+    gl_FragColor = col / 5.0;
+}
+
+
+
+</script>
+<!-- effect fragment shader template -->
+<script id="fx_common_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform vec2 uDelta;
+
+varying vec2 texCoord;
+varying vec2 screenCoord;
+
+void main(void) {
+    gl_FragColor = texture2D(uSrc, texCoord);
+}
+
+
+
+</script>
+<!-- post processing -->
+<script id="pp_final_vsh" type="x-shader/x_vertex">
+uniform vec3 uResolution;
+attribute vec2 aPosition;
+varying vec2 texCoord;
+varying vec2 screenCoord;
+void main(void) {
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+    texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+    screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+}
+
+
+
+</script>
+<script id="pp_final_fsh" type="x-shader/x_fragment">
+#ifdef GL_ES
+//precision mediump float;
+precision highp float;
+#endif
+uniform sampler2D uSrc;
+uniform sampler2D uBloom;
+uniform vec2 uDelta;
+varying vec2 texCoord;
+varying vec2 screenCoord;
+void main(void) {
+    vec4 srccol = texture2D(uSrc, texCoord) * 2.0;
+    vec4 bloomcol = texture2D(uBloom, texCoord);
+    vec4 col;
+    col = srccol + bloomcol * (vec4(1.0) + srccol);
+    col *= smoothstep(1.0, 0.0, pow(length((texCoord - vec2(0.5)) * 2.0), 1.2) * 0.5);
+    col = pow(col, vec4(0.45454545454545)); //(1.0 / 2.2)
+
+    gl_FragColor = vec4(col.rgb, 1.0);
+    gl_FragColor.a = 1.0;
+}
+
+
+
+</script>
+<script>
+    $("#bar3").xq_navbar({"type":"line","liwidth":"avg","bgcolor":"#000"});
+</script>
+<script type="text/javascript" src="js/sakura.js"></script>
+<script type="text/javascript" src="js/vendors/trianglify.min.js"></script>
+<script type="text/javascript" src="js/vendors/TweenMax.min.js"></script>
+<script type="text/javascript" src="js/vendors/ScrollToPlugin.min.js"></script>
+<script type="text/javascript" src="js/vendors/cash.min.js"></script>
+<style>
+    .descContent{
+        margin: 0 auto;
+        width: 56%;
+        color: #fff;
+        background: rgba(0,0,0,.5);
+        padding: 4%;
+        border-radius: 5px;
+    }
+    .descContent p{
+        margin:0;
+        padding:0;
+    }
+    .descContent .head{
+        padding:20px 0;
+    }
+    img{
+        width: 200px;
+        height: 200px;
+        border: 0;
+    }
+</style>
+
+</body>
+</html>
